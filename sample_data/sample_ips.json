@@ -1,0 +1,19 @@
+{
+  "client_name": "Sample Client – Margaret Chen Family Trust",
+  "risk_tolerance": "Moderate",
+  "time_horizon_years": 15,
+  "liquidity_reserve_pct": 5,
+  "single_position_limit_pct": 10,
+  "allocation_targets": {
+    "US Equity": {"min": 30, "max": 50},
+    "International Equity": {"min": 10, "max": 25},
+    "Fixed Income": {"min": 20, "max": 40},
+    "Cash": {"min": 5, "max": 15},
+    "Alternatives": {"min": 0, "max": 10}
+  },
+  "constraints": [
+    "No direct tobacco holdings",
+    "No direct fossil fuel / thermal coal producers",
+    "Prefer tax-efficient placement of fixed income in tax-deferred accounts"
+  ]
+}

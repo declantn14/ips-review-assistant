@@ -1,0 +1,11 @@
+name,ticker,asset_class,security_type,market_value,restricted_flags
+Apple Inc,AAPL,US Equity,Single Stock,240000,
+Microsoft Corp,MSFT,US Equity,Single Stock,180000,
+Vanguard Total Stock Market ETF,VTI,US Equity,Fund,400000,
+SPDR S&P 500 ETF Trust,SPY,US Equity,Fund,300000,
+Altria Group Inc,MO,US Equity,Single Stock,80000,tobacco
+Vanguard FTSE Developed Markets ETF,VEA,International Equity,Fund,200000,
+iShares MSCI Emerging Markets ETF,EEM,International Equity,Fund,100000,
+iShares Core US Aggregate Bond ETF,AGG,Fixed Income,Fund,350000,
+Vanguard Total Bond Market ETF,BND,Fixed Income,Fund,100000,
+Cash / Money Market,CASH,Cash,Cash Equivalent,50000,
