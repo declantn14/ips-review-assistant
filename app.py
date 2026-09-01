@@ -62,21 +62,21 @@ with st.sidebar:
     st.header("Data")
 
     with st.expander("Download blank templates"):
-        ips_template_path = os.path.join(TEMPLATES_DIR, "IPS_Template.docx")
+        ips_template_path = os.path.join(TEMPLATES_DIR, "IPS_Template_1.docx")
         if os.path.exists(ips_template_path):
             st.download_button(
                 "IPS template (.docx)",
                 data=_read_bytes(ips_template_path),
-                file_name="IPS_Template.docx",
+                file_name="IPS_Template_1.docx",
                 mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
                 use_container_width=True,
             )
-        portfolio_template_path = os.path.join(TEMPLATES_DIR, "Portfolio_Holdings_Template.xlsx")
+        portfolio_template_path = os.path.join(TEMPLATES_DIR, "Portfolio_Holdings_Template_1.xlsx")
         if os.path.exists(portfolio_template_path):
             st.download_button(
                 "Portfolio template (.xlsx)",
                 data=_read_bytes(portfolio_template_path),
-                file_name="Portfolio_Holdings_Template.xlsx",
+                file_name="Portfolio_Holdings_Template_1.xlsx",
                 mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                 use_container_width=True,
             )
