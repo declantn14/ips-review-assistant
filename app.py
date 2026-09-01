@@ -1,24 +1,20 @@
 """
 IPS Review Assistant -- Streamlit app
 
-Upload (or use the sample) IPS parameters and portfolio holdings, run a
-deterministic consistency check between them, then have Claude turn the
-findings into a client-file-ready review memo.
+Upload (or use the sample) IPS parameters and portfolio holdings, and run a
+deterministic consistency check between them.
 
 Run locally:
     pip install -r requirements.txt
-    export ANTHROPIC_API_KEY=sk-ant-...   # or paste it in the sidebar instead
     streamlit run app.py
 """
 
 import json
-import os
 
 import pandas as pd
 import streamlit as st
 
 from ips_checker import compute_allocation, run_all_checks
-from ai_narrative import generate_review_memo, NoApiKeyError
 
 st.set_page_config(page_title="IPS Review Assistant", page_icon="\U0001F4CB", layout="wide")
 
@@ -48,9 +44,8 @@ if "allocation_df" not in st.session_state:
 
 st.title("IPS Review Assistant")
 st.caption(
-    "Checks a client portfolio against its Investment Policy Statement, then uses Claude "
-    "to write a plain-English review memo. All figures below are computed with plain "
-    "arithmetic -- the AI is only used to explain and prioritize the results."
+    "Checks a client portfolio against its Investment Policy Statement. All figures below "
+    "are computed with plain arithmetic."
 )
 
 # ---------------------------------------------------------------- sidebar --
@@ -74,13 +69,6 @@ with st.sidebar:
         else:
             df["restricted_flags"] = df["restricted_flags"].fillna("")
             st.session_state.portfolio_df = df
-
-    st.divider()
-    st.header("Claude API key")
-    st.caption("Only needed for the AI memo step. Get one at console.anthropic.com")
-    key_input = st.text_input("ANTHROPIC_API_KEY", type="password", value=os.environ.get("ANTHROPIC_API_KEY", ""))
-    if key_input:
-        os.environ["ANTHROPIC_API_KEY"] = key_input
 
 # ------------------------------------------------------------ IPS editor --
 st.subheader("1. Investment Policy Statement")
@@ -167,11 +155,3 @@ if st.button("Run review", type="primary"):
         return [color] * len(row)
 
     st.dataframe(findings_df.style.apply(_highlight, axis=1), use_container_width=True)
-
-    st.markdown("**AI-generated review memo**")
-    try:
-        with st.spinner("Asking Claude to draft the memo..."):
-            memo = generate_review_memo(st.session_state.ips, result)
-        st.markdown(memo)
-    except NoApiKeyError as e:
-        st.warning(str(e))
