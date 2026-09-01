@@ -194,7 +194,7 @@ if st.button("Run review", type="primary"):
     m2.metric("Flags", result["flag_count"])
     m3.metric("Passed checks", result["ok_count"])
 
-    st.markdown("**Actual allocation vs. target**")
+    st.markdown("**Actual allocation**")
     alloc_actual = compute_allocation(portfolio_df)
     st.bar_chart(alloc_actual)
 
