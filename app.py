@@ -15,6 +15,7 @@ import pandas as pd
 import streamlit as st
 
 from ips_checker import compute_allocation, run_all_checks
+from ips_docx import parse_ips_docx, IpsDocxParseError
 
 st.set_page_config(page_title="IPS Review Assistant", page_icon="\U0001F4CB", layout="wide")
 
@@ -52,13 +53,26 @@ st.caption(
 with st.sidebar:
     st.header("Data")
 
-    ips_file = st.file_uploader("IPS parameters (JSON)", type=["json"])
+    ips_file = st.file_uploader("IPS parameters (JSON or Word)", type=["json", "docx"])
     if ips_file is not None:
-        st.session_state.ips = json.load(ips_file)
-        targets = st.session_state.ips["allocation_targets"]
-        st.session_state.allocation_df = pd.DataFrame(
-            [{"Asset Class": k, "Min %": v["min"], "Max %": v["max"]} for k, v in targets.items()]
-        )
+        try:
+            if ips_file.name.lower().endswith(".docx"):
+                new_ips = parse_ips_docx(ips_file)
+            else:
+                new_ips = json.load(ips_file)
+        except IpsDocxParseError as e:
+            st.error(str(e))
+            new_ips = None
+        except Exception as e:
+            st.error(f"Couldn't read that file: {e}")
+            new_ips = None
+
+        if new_ips is not None:
+            st.session_state.ips = new_ips
+            targets = st.session_state.ips["allocation_targets"]
+            st.session_state.allocation_df = pd.DataFrame(
+                [{"Asset Class": k, "Min %": v["min"], "Max %": v["max"]} for k, v in targets.items()]
+            )
 
     portfolio_file = st.file_uploader("Portfolio holdings (CSV or Excel)", type=["csv", "xlsx"])
     if portfolio_file is not None:
