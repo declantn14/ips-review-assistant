@@ -60,7 +60,7 @@ with st.sidebar:
             [{"Asset Class": k, "Min %": v["min"], "Max %": v["max"]} for k, v in targets.items()]
         )
 
-        portfolio_file = st.file_uploader("Portfolio holdings (CSV or Excel)", type=["csv", "xlsx"])
+    portfolio_file = st.file_uploader("Portfolio holdings (CSV or Excel)", type=["csv", "xlsx"])
     if portfolio_file is not None:
         try:
             if portfolio_file.name.lower().endswith(".xlsx"):
@@ -78,6 +78,7 @@ with st.sidebar:
             else:
                 df["restricted_flags"] = df["restricted_flags"].fillna("")
                 st.session_state.portfolio_df = df
+
 # ------------------------------------------------------------ IPS editor --
 st.subheader("1. Investment Policy Statement")
 col1, col2 = st.columns(2)
