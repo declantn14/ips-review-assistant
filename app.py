@@ -201,8 +201,9 @@ if st.button("Run review", type="primary"):
     st.markdown("**Findings**")
     findings_df = pd.DataFrame(result["findings"])
 
-    def _highlight(row):
-        color = "background-color: #ffe3e3" if row["status"] == "FLAG" else "background-color: #e6f7e9"
-        return [color] * len(row)
+        def _highlight(row):
+        bg = "#ffe3e3" if row["status"] == "FLAG" else "#e6f7e9"
+        style = f"background-color: {bg}; color: #000000;"
+        return [style] * len(row)
 
     st.dataframe(findings_df.style.apply(_highlight, axis=1), use_container_width=True)
