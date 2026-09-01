@@ -60,16 +60,24 @@ with st.sidebar:
             [{"Asset Class": k, "Min %": v["min"], "Max %": v["max"]} for k, v in targets.items()]
         )
 
-    portfolio_file = st.file_uploader("Portfolio holdings (CSV)", type=["csv"])
+        portfolio_file = st.file_uploader("Portfolio holdings (CSV or Excel)", type=["csv", "xlsx"])
     if portfolio_file is not None:
-        df = pd.read_csv(portfolio_file)
-        missing = set(REQUIRED_PORTFOLIO_COLS) - set(df.columns)
-        if missing:
-            st.error(f"CSV is missing required columns: {sorted(missing)}")
-        else:
-            df["restricted_flags"] = df["restricted_flags"].fillna("")
-            st.session_state.portfolio_df = df
+        try:
+            if portfolio_file.name.lower().endswith(".xlsx"):
+                df = pd.read_excel(portfolio_file)
+            else:
+                df = pd.read_csv(portfolio_file)
+        except Exception as e:
+            st.error(f"Couldn't read that file: {e}")
+            df = None
 
+        if df is not None:
+            missing = set(REQUIRED_PORTFOLIO_COLS) - set(df.columns)
+            if missing:
+                st.error(f"File is missing required columns: {sorted(missing)}")
+            else:
+                df["restricted_flags"] = df["restricted_flags"].fillna("")
+                st.session_state.portfolio_df = df
 # ------------------------------------------------------------ IPS editor --
 st.subheader("1. Investment Policy Statement")
 col1, col2 = st.columns(2)
