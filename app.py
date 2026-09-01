@@ -10,6 +10,7 @@ Run locally:
 """
 
 import json
+import os
 
 import pandas as pd
 import streamlit as st
@@ -18,6 +19,13 @@ from ips_checker import compute_allocation, run_all_checks
 from ips_docx import parse_ips_docx, IpsDocxParseError
 
 st.set_page_config(page_title="IPS Review Assistant", page_icon="\U0001F4CB", layout="wide")
+
+TEMPLATES_DIR = "templates"
+
+
+def _read_bytes(path):
+    with open(path, "rb") as f:
+        return f.read()
 
 REQUIRED_PORTFOLIO_COLS = ["name", "ticker", "asset_class", "security_type", "market_value", "restricted_flags"]
 
@@ -52,6 +60,26 @@ st.caption(
 # ---------------------------------------------------------------- sidebar --
 with st.sidebar:
     st.header("Data")
+
+    with st.expander("Download blank templates"):
+        ips_template_path = os.path.join(TEMPLATES_DIR, "IPS_Template.docx")
+        if os.path.exists(ips_template_path):
+            st.download_button(
+                "IPS template (.docx)",
+                data=_read_bytes(ips_template_path),
+                file_name="IPS_Template.docx",
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True,
+            )
+        portfolio_template_path = os.path.join(TEMPLATES_DIR, "Portfolio_Holdings_Template.xlsx")
+        if os.path.exists(portfolio_template_path):
+            st.download_button(
+                "Portfolio template (.xlsx)",
+                data=_read_bytes(portfolio_template_path),
+                file_name="Portfolio_Holdings_Template.xlsx",
+                mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                use_container_width=True,
+            )
 
     ips_file = st.file_uploader("IPS parameters (JSON or Word)", type=["json", "docx"])
     if ips_file is not None:
@@ -166,7 +194,7 @@ if st.button("Run review", type="primary"):
     m2.metric("Flags", result["flag_count"])
     m3.metric("Passed checks", result["ok_count"])
 
-    st.markdown("**Actual allocation**")
+    st.markdown("**Actual allocation vs. target**")
     alloc_actual = compute_allocation(portfolio_df)
     st.bar_chart(alloc_actual)
 
